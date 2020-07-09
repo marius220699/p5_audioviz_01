@@ -4,16 +4,27 @@
  * mono
  * drums.mp3
  * Band: 2
- * peak: ca 190
+ * peak: ca 180
+ * 
+ * BassSyth
+ * mono
+ * bass.mp3
+ * Band: 3
+ * peak:200
+ * low:160
+ * 
+ * 
+ * 
  */
 
 let drums_l 
 let song
 let ball_array = []
 let segments = []
+//let segments2 = []
 
 function preload(){
-    drums_l  = loadSound('vsd/drums.mp3');
+    drums_l  = loadSound('vsd/bass.mp3');
     song = loadSound('vsd/visual_distortion.mp3');
 }
 
@@ -41,14 +52,14 @@ function draw(){
     
   /*  let drums_l_spectrum = drums_l_fft.analyze();
     
-    let hh_value = drums_l_spectrum[2];
+    let basssynth_value = drums_l_spectrum[2];
 
     background(244,132,140); 
 
     // calculate the diameter of the circle 
     //height/2 + sin(theta) * amplitude; 
   
-    var diam =  hh_value ;
+    var diam =  basssynth_value ;
   
     // draw the circle 
     ellipse(width/2,height/2, diam, diam); 
@@ -57,7 +68,7 @@ function draw(){
     // you can play with this number to change the speed
  
   
-    lastHHval = hh_value;
+    lastBassSynthval = basssynth_value;
   }
   */
   
@@ -66,14 +77,27 @@ function draw(){
   
   
     background(0);
-    checkHH();
+    checkBassSynthpeak();
+    checkBassSynthlow();
 
-    ball_array.forEach(function (ball){
-        ball.update();
-        ball.show();
-    })
+    
 
-    let killIDs = [];
+    segments = segments.filter(segment => segment.alive);
+    segments.forEach((segment) => {
+        segment.update();
+        segment.show();
+    });
+
+    /*segments2 = segments2.filter(segment => segment.alive);
+    segments2.forEach((segment) => {
+        segment.update();
+        segment.show();
+    });*/
+
+
+   
+
+    /*let killIDs = [];
     segments.forEach(function (segment, i){
         segment.update();
         if(segment.alive){
@@ -87,31 +111,76 @@ function draw(){
             segments.splice(id, 1);
 
     })
+
+    let killIDs2 = [];
+    segments2.forEach(function (segment2, i){
+        segment2.update();
+        if(segment2.alive){
+            segment2.show();
+        }else{
+            killIDs2.push(i);
+        }
+    })
+
+    killIDs2.forEach(function (id){
+            segments2.splice(id, 1);
+
+    })*/
 }
 
+//Bassynth
+let lastBassSynthval = 0;
+let direction_bs = 1;
 
-let lastHHval = 0;
-let direction_hh = 1;
-
-function checkHH(){
+function checkBassSynthpeak(){
     let drums_l_spectrum = drums_l_fft.analyze();
     
-    let hh_value = drums_l_spectrum[2];
-    console.log(hh_value);
-    if(lastHHval > hh_value){
-        if(direction_hh > 0 && lastHHval > 180){
-            let ball = new Ball(50, 50);
-            ball_array.push(ball);
+    let basssynth_value = drums_l_spectrum[3];
+   // console.log(basssynth_value);
+    if(lastBassSynthval > basssynth_value){
+        if(direction_bs > 0 && lastBassSynthval > 200){
+            let segment = new Segment(50, 50);
+            segments.push(segment);
         }
 
-        direction_hh = -1;
-    }else{
-        direction_hh = 1;
+        direction_bs = -1;
     }
+    else{
+        direction_bs = 1;
+    }
+    
 
-    console.log(direction_hh);
-    lastHHval = hh_value;
+    /*console.log(direction_bs);*/
+    lastBassSynthval = basssynth_value;
 } 
+
+let lastBassSynthval2 = 0;
+let direction_bs2 = 1;
+
+function checkBassSynthlow(){
+    let drums_l_spectrum = drums_l_fft.analyze();
+    
+    let basssynth_value2 = drums_l_spectrum[3];
+   // console.log(basssynth_value);
+    if(lastBassSynthval2 > basssynth_value2){
+        if(direction_bs2 > 0 && lastBassSynthval2 > 200){
+            console.log("gfgh");
+            let segment2 = new Segment2(50, 50);
+            segments.push(segment2);
+        }
+
+        direction_bs2 = -1;
+    }
+    else{
+        direction_bs2 = 1;
+    }
+    
+
+   // console.log(direction_bs);
+    lastBassSynthval2 = basssynth_value2;
+} 
+
+
 
 function toggleSong(){
     if(song.isPlaying()){
@@ -153,24 +222,12 @@ function pushSegment(){
     segments.push(segment)
 }
 
-// class Tunnel{
-//     constructor(){
-//         this.segments = [];
-//     }
+function pushSegment2(){
+    let segment2 = new Segment2()
+    segments2.push(segment2)
+}
 
-//     draw(){
-//         this.segments.forEach(function (segment, i){
-//             push();
-//             rectMode(CENTER);
-//             rect(0, 0, )
-//             pop();          
-//         });
-//     }
 
-//     step(){
-
-//     }
-// }
 
 class Segment{
     constructor(style){
@@ -189,7 +246,38 @@ class Segment{
         rectMode(CENTER);
         stroke(255);
         strokeWeight(3);
-        fill(100);
+        fill(86,111,120);
+        rect(width/2, height/2, this.size);
+        pop();
+    }
+
+    update(){
+        this.size += this.speed;
+        this.speed *= this.accel; 
+        if(this.size > 1920 + 3000){
+            this.alive = false;
+        }
+    }
+}
+
+class Segment2{
+    constructor(style){
+        this.x = width/2;
+        this.y = height/2;
+        this.size = 30
+
+        this.speed = 1;
+        this.accel = 1.1;
+
+        this.alive = true;
+    }
+
+    show(){
+        push();
+        rectMode(CENTER);
+        stroke(255);
+        strokeWeight(3);
+        fill(86,233,120);
         rect(width/2, height/2, this.size);
         pop();
     }
