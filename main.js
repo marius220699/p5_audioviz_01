@@ -13,6 +13,26 @@
  * peak:200
  * low:160
  * 
+ * HH
+ * mono
+ * other.mp3
+ * Band: 
+ * peak:
+ * low:
+ * 
+ * Snair
+ * mono
+ * other.mp3
+ * Band: 
+ * peak:
+ * low:
+ * 
+ * MelodieSynth
+ * mono
+ * visual_distortion.mp3
+ * Band: 
+ * peak:
+ * low:
  * 
  * 
  */
@@ -21,6 +41,7 @@ let drums_l
 let song
 let ball_array = []
 let segments = []
+let last_segment = 0
 //let segments2 = []
 
 function preload(){
@@ -78,7 +99,7 @@ function draw(){
   
     background(0);
     checkBassSynthpeak();
-    checkBassSynthlow();
+    //checkBassSynthlow();
 
     
 
@@ -128,6 +149,10 @@ function draw(){
     })*/
 }
 
+function getMillis(){
+    let d = new Date();
+    return d.getTime()
+}
 //Bassynth
 let lastBassSynthval = 0;
 let direction_bs = 1;
@@ -138,7 +163,8 @@ function checkBassSynthpeak(){
     let basssynth_value = drums_l_spectrum[3];
    // console.log(basssynth_value);
     if(lastBassSynthval > basssynth_value){
-        if(direction_bs > 0 && lastBassSynthval > 200){
+        if(direction_bs > 0 && lastBassSynthval > 190 &&getMillis()-last_segment > 450){
+            last_segment = getMillis();
             let segment = new Segment(50, 50);
             segments.push(segment);
         }
@@ -235,8 +261,8 @@ class Segment{
         this.y = height/2;
         this.size = 30
 
-        this.speed = 1;
-        this.accel = 1.1;
+        this.speed = 0.5;
+        this.accel = 1.05;
 
         this.alive = true;
     }
@@ -254,7 +280,7 @@ class Segment{
     update(){
         this.size += this.speed;
         this.speed *= this.accel; 
-        if(this.size > 1920 + 3000){
+        if(this.size > 1920 + 20000){
             this.alive = false;
         }
     }
