@@ -161,10 +161,10 @@ function checkBassSynthpeak(){
     let drums_l_spectrum = drums_l_fft.analyze();
     
     let basssynth_value = drums_l_spectrum[3];
-   // console.log(basssynth_value);
+   console.log(basssynth_value);
     if(lastBassSynthval > basssynth_value){
-        if(direction_bs > 0 && lastBassSynthval > 190 &&getMillis()-last_segment > 450){
-            last_segment = getMillis();
+        if(direction_bs > 0 && lastBassSynthval > 190 ){//&&getMillis()-last_segment > 450){
+            //last_segment = getMillis();
             let segment = new Segment(50, 50);
             segments.push(segment);
         }
