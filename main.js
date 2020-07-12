@@ -3,15 +3,16 @@
  * kick
  * mono
  * drums.mp3
- * Band: 2
- * peak: ca 180
+ * Band: 189
+ * peak: ca 110-120
  * 
  * BassSyth
  * mono
  * bass.mp3
- * Band: 3
- * peak:200
- * low:160
+ * Band: 11
+ * peak:160-170
+ * Band: 9 
+ * peak:190
  * 
  * HH
  * mono
@@ -23,9 +24,9 @@
  * Snair
  * mono
  * other.mp3
- * Band: 
- * peak:
- * low:
+ * Band: 559
+ * peak:70
+ * low:60
  * 
  * MelodieSynth
  * mono
@@ -42,16 +43,18 @@ let song
 let ball_array = []
 let segments = []
 let last_segment = 0
-//let segments2 = []
+let segments2 = []
 
 function preload(){
     drums_l  = loadSound('vsd/bass.mp3');
+    //drums_2  = loadsound('vsd/bass.mp3');
     song = loadSound('vsd/visual_distortion.mp3');
 }
 
 let canvas;
 let button;
 let drums_l_fft;
+//let drums_2_fft;
 
 function setup(){
     canvas = createCanvas(1920, 1080);
@@ -64,6 +67,8 @@ function setup(){
 
     drums_l_fft = new p5.FFT()
     drums_l_fft.setInput(drums_l);
+    //drums_2_fft = new p5.FFT();
+    //drums_2_fft.setInput(drums_2);
 
 
 	theta = 0; 
@@ -149,10 +154,10 @@ function draw(){
     })*/
 }
 
-function getMillis(){
+/*function getMillis(){
     let d = new Date();
     return d.getTime()
-}
+}*/
 //Bassynth
 let lastBassSynthval = 0;
 let direction_bs = 1;
@@ -160,10 +165,10 @@ let direction_bs = 1;
 function checkBassSynthpeak(){
     let drums_l_spectrum = drums_l_fft.analyze();
     
-    let basssynth_value = drums_l_spectrum[3];
+    let basssynth_value = drums_l_spectrum[11];
    console.log(basssynth_value);
     if(lastBassSynthval > basssynth_value){
-        if(direction_bs > 0 && lastBassSynthval > 190 ){//&&getMillis()-last_segment > 450){
+        if(direction_bs > 0 && lastBassSynthval > 170 ){//&&getMillis()-last_segment > 450){
             //last_segment = getMillis();
             let segment = new Segment(50, 50);
             segments.push(segment);
@@ -184,12 +189,12 @@ let lastBassSynthval2 = 0;
 let direction_bs2 = 1;
 
 function checkBassSynthlow(){
-    let drums_l_spectrum = drums_l_fft.analyze();
+    let drums_1_spectrum = drums_1_fft.analyze();
     
-    let basssynth_value2 = drums_l_spectrum[3];
+    let basssynth_value2 = drums_2_spectrum[9];
    // console.log(basssynth_value);
     if(lastBassSynthval2 > basssynth_value2){
-        if(direction_bs2 > 0 && lastBassSynthval2 > 200){
+        if(direction_bs2 > 0 && lastBassSynthval2 > 185){
             console.log("gfgh");
             let segment2 = new Segment2(50, 50);
             segments.push(segment2);
@@ -270,9 +275,10 @@ class Segment{
     show(){
         push();
         rectMode(CENTER);
-        stroke(255);
+        stroke('rgba(100,100,100,60)');
         strokeWeight(3);
-        fill(86,111,120);
+        fill('rgba(195,171,222,100)');
+        
         rect(width/2, height/2, this.size);
         pop();
     }
@@ -302,8 +308,8 @@ class Segment2{
         push();
         rectMode(CENTER);
         stroke(255);
-        strokeWeight(3);
-        fill(86,233,120);
+        strokeWeight(1);
+        fill('rgba(0,0,0,60)');
         rect(width/2, height/2, this.size);
         pop();
     }
