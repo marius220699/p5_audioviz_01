@@ -103,8 +103,8 @@ function draw(){
   
   
     background(0);
-    checkBassSynthpeak();
-    //checkBassSynthlow();
+    //checkBassSynthpeak();
+    checkBassSynthlow();
 
     
 
